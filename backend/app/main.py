@@ -1,30 +1,48 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
+import os
+
 from app.config import settings
 from app.database import engine, Base
 from app.api.endpoints import router as api_router
 
-# Initialize database tables
-Base.metadata.create_all(bind=engine)
-
+# Create app ONLY ONCE
 app = FastAPI(
     title=settings.PROJECT_NAME,
     description="An AI-powered agentic travel planner using LangChain, Google Maps API, and vector personalization.",
     version="1.0.0"
 )
 
-# Set up CORS middleware to allow connections from Vite frontend
+# CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # For development; specify exact ports in production
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# Include API endpoints
+# DB init
+Base.metadata.create_all(bind=engine)
+
+# API routes FIRST
 app.include_router(api_router, prefix="/api")
 
-@app.get("/")
-def read_root():
-    return {"message": f"Welcome to the {settings.PROJECT_NAME} Backend API. Access /docs for Swagger documentation."}
+# Root API route (NOT frontend)
+@app.get("/api")
+def root():
+    return {"message": f"{settings.PROJECT_NAME} API running"}
+
+# ----------------------------
+# STATIC FRONTEND (PUT LAST)
+# ----------------------------
+
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+frontend_path = os.path.join(BASE_DIR, "static", "dist")
+
+app.mount(
+    "/",
+    StaticFiles(directory=frontend_path, html=True),
+    name="static"
+)
