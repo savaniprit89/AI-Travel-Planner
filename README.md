@@ -99,4 +99,8 @@ AI travel/
     Open your browser and navigate to **http://localhost:5173** to view the app!
 
 ---
+Create a .env file inside the backend/ directory:
 
+OPENAI_API_KEY=your_openai_api_key
+
+GOOGLE_MAPS_API_KEY=your_google_maps_api_key
