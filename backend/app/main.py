@@ -7,12 +7,25 @@ from app.config import settings
 from app.database import engine, Base
 from app.api.endpoints import router as api_router
 
+
+
 # Create app ONLY ONCE
 app = FastAPI(
     title=settings.PROJECT_NAME,
     description="An AI-powered agentic travel planner using LangChain, Google Maps API, and vector personalization.",
     version="1.0.0"
 )
+from pathlib import Path
+
+frontend_path = Path("static/dist")
+
+if frontend_path.exists():
+    app.mount(
+        "/",
+        StaticFiles(directory=str(frontend_path), html=True),
+        name="frontend",
+    )
+
 
 # CORS
 app.add_middleware(
