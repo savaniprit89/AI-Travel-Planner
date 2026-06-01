@@ -102,5 +102,5 @@ AI travel/
 Create a .env file inside the backend/ directory:
 
 OPENAI_API_KEY=your_openai_api_key
+
 GOOGLE_MAPS_API_KEY=your_google_maps_api_key
-OPENWEATHERMAP_API_KEY=your_openweathermap_api_key
